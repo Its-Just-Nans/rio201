@@ -5,13 +5,7 @@
 The objective of this project is to implement an IoT application. The IoT should uses several sensors and requests.
 We should use the [IoT Lab](https://www.iot-lab.info/).
 
-To simplify the task for the IoT lab deployment, we used the enoslib library. This library is a python library (made by the INRIA research center) that allows to deploy IoT lab experiments.
-
-The repo is available on the INRIA gitlab [https://gitlab.inria.fr/discovery/enoslib](https://gitlab.inria.fr/discovery/enoslib).
-
-During the project, I had to fix some bug in the library.
-
-The pull request is available on online: [https://gitlab.inria.fr/discovery/enoslib/-/merge_requests/214](https://gitlab.inria.fr/discovery/enoslib/-/merge_requests/214).
+To simplify the task for the IoT lab deployment, we used the enoslib library.
 
 \newpage
 
@@ -50,7 +44,15 @@ When the alarm is triggered, the alarm is sent to the which can display an alert
 
 All the code is available on this github repository: [https://github.com/Its-Just-Nans/rio201](https://github.com/Its-Just-Nans/rio201)
 
-The enoslib library allows us to deploy easily an IoT lab experiment. We just need to provide a correct configuration schema and the correct images to flash.
+As explained previously, we used the enoslib library. It's a python library (made by the INRIA research center) that allows to deploy IoT lab experiments.
+
+The repo is available on the INRIA gitlab [https://gitlab.inria.fr/discovery/enoslib](https://gitlab.inria.fr/discovery/enoslib).
+
+During the project, I had to fix some bug in the library.
+
+The pull request is available on online: [https://gitlab.inria.fr/discovery/enoslib/-/merge_requests/214](https://gitlab.inria.fr/discovery/enoslib/-/merge_requests/214).
+
+To deploy our experiment, we just need to provide a correct configuration schema and the correct images to flash.
 
 First we need to install the enoslib and to setup the authentification file.
 
@@ -65,7 +67,7 @@ echo -n user:$ENC_PASS > ~/.iotlabrc
 
 In the configuration object of enoslib, if we want to reserve a node, we have two solutions.
 
-The first solution is to use a random device like this:
+The first solution is to use a random device, to do that, we can specify a node like this:
 
 ```python
 machines = [
@@ -79,7 +81,7 @@ machines = [
 ]
 ```
 
-The problem with that is that we cannot control which node we are using. To do that we reserve the node using his name :
+To reserve a specific node that we know, we can reserve it using his name :
 
 ```python
 machines = [
@@ -91,7 +93,7 @@ machines = [
 ]
 ```
 
-After creating the configuration, we can deploy the experiment:
+After creating the configuration, we can deploy our experiment:
 
 ```python
 conf = en.IotlabConf.from_dictionary(provider_conf)
@@ -99,7 +101,7 @@ p = en.Iotlab(conf)
 roles, networks = p.init()
 ```
 
-Then we can use the roles to get the node we want and using it, we can access to the serial connection
+Then we can use the roles from the configuration to get the node we want and use them. For example, we can access to the serial connection
 
 ```python
 sender = roles["mysensor"][0]

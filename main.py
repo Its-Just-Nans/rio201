@@ -45,9 +45,12 @@ def reading_thread(serial, name):
     to send and receive packets at the same time.
     """
     while not stop_reading:
-        data = serial.read()
-        if data:
-            displayer[name] = data
+        try:
+            data = serial.read()
+            if data:
+                displayer[name] = data
+        except Exception as e:
+            pass
 
 
 def check_code(codes):
@@ -70,9 +73,10 @@ displayer = {}
 SITE = "lille"
 
 
-def display(length):
+def display(header):
     """display thread"""
     global displayer
+    length = len(header)
     while not stop_reading:
         terminal_width, _ = shutil.get_terminal_size()
         rows = []
@@ -106,13 +110,6 @@ def main():
         "walltime": "01:00",
         "resources": {
             "machines": [
-                # {
-                #     "roles": ["sensor", "captor"],
-                #     "archi": "m3:at86rf231",
-                #     "site": "lille",
-                #     "number": 1,
-                #     "image": code_echo_captor,
-                # },
                 {
                     "roles": [
                         "router",
@@ -162,14 +159,17 @@ def main():
 
     p = en.Iotlab(conf)
     try:
-        roles, networks = p.init()
+        roles, _networks = p.init()
         sender = roles["captor"][0]
         receiver = roles["toto"][0]
-        with en.IotlabSerial(sender, interactive=True) as s_sender, en.IotlabSerial(
-            receiver, interactive=True
-        ) as s_receiver:
+        with (
+            en.IotlabSerial(sender, interactive=True) as s_sender,
+            en.IotlabSerial(receiver, interactive=True) as s_receiver,
+        ):
             print("starting experiment")
-            display_thread = threading.Thread(target=display, args=(2,))
+            display_thread = threading.Thread(
+                target=display, args=([sender.uid, receiver.uid],)
+            )
             display_thread.start()
             read_thread = threading.Thread(target=reading_thread, args=(s_receiver, 0))
             read_thread.start()
@@ -180,7 +180,9 @@ def main():
             display_thread.join()
             read_thread.join()
             a.join()
-
+    except KeyboardInterrupt:
+        stop_reading = True
+        print("KeyboardInterrupt")
     except Exception as e:
         stop_reading = True
         print(e)
