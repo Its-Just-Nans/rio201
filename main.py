@@ -67,6 +67,8 @@ def check_code(codes):
 
 displayer = {}
 
+SITE = "lille"
+
 
 def display(length):
     """display thread"""
@@ -115,7 +117,7 @@ def main():
                     "roles": [
                         "router",
                     ],
-                    "hostname": ["m3-65.lille.iot-lab.info"],
+                    "hostname": [f"m3-65.{SITE}.iot-lab.info"],
                     "image": join(
                         examples_folder,
                         "05-rpl-tsch-border-router",
@@ -124,7 +126,7 @@ def main():
                 },
                 {
                     "roles": ["sensor", "toto"],
-                    "hostname": ["m3-66.lille.iot-lab.info"],  # 1857
+                    "hostname": [f"m3-66.{SITE}.iot-lab.info"],  # 1857
                     "image": join(
                         examples_folder,
                         "04-er-rest-example",
@@ -133,7 +135,7 @@ def main():
                 },
                 {
                     "roles": ["sensor", "captor"],
-                    "hostname": ["m3-67.lille.iot-lab.info"],  # 1957
+                    "hostname": [f"m3-67.{SITE}.iot-lab.info"],  # 1957
                     "image": join(
                         examples_folder,
                         "04-er-rest-example",
@@ -146,7 +148,7 @@ def main():
                     "id": "my_network",
                     "type": "prod",
                     "roles": ["sensor"],
-                    "site": "lille",
+                    "site": SITE,
                 }
             ],
         },
