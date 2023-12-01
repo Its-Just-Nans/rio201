@@ -122,6 +122,8 @@ finally:
     p.shutdown()
 ```
 
+The main script main.py is doing all the job, even the compilation. But note that for the compilation, you will need the correct tools installed on your computer.
+
 \newpage
 
 ## Conclusion

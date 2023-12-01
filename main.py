@@ -44,11 +44,15 @@ def reading_thread(serial, name):
     Necessary since the getting started tutorial supposes a user interaction
     to send and receive packets at the same time.
     """
+    global stop_reading
     while not stop_reading:
         try:
             data = serial.read()
             if data:
                 displayer[name] = data
+        except KeyboardInterrupt:
+            stop_reading = True
+            break
         except Exception as e:
             pass
 
