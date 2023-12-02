@@ -3,5 +3,8 @@ PWD=$(shell pwd)
 
 rapport:
 	npx @mermaid-js/mermaid-cli -i img/archi.mmd -o img/archi.png --scale 4
+	npx @mermaid-js/mermaid-cli -i img/alarm.mmd -o img/alarm.png --scale 4
+	npx @mermaid-js/mermaid-cli -i img/threshold.mmd -o img/threshold.png --scale 4
+	npx @mermaid-js/mermaid-cli -i img/data.mmd -o img/data.png --scale 4
 	pandoc -H conf.tex $(PANDOC_OPTIONS) header.md README.md -o report.pdf
 .PHONY: rapport

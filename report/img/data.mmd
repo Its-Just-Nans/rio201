@@ -1,0 +1,7 @@
+sequenceDiagram
+    Note left of SSH: 1. Server can show Diagram
+    Server ->> Sensor (COAP server): COAP GET Temp
+    Server ->> Sensor (HTTP server): HTTP GET Pressure
+    Note left of SSH: The use can the get the data
+    SSH ->> Server: HTTP GET /temp
+    SSH ->> Server: HTTP GET /pressure

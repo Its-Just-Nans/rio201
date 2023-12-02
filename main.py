@@ -1,3 +1,4 @@
+""" main rio201 file """
 import math
 import shutil
 import logging
@@ -79,6 +80,7 @@ SITE = "lille"
 
 def display(header):
     """display thread"""
+    global stop_reading
     global displayer
     length = len(header)
     while not stop_reading:
@@ -108,7 +110,8 @@ def display(header):
 
 def main():
     """main fn"""
-    examples_folder = join(folder_contiki, "examples", "iotlab")
+    global stop_reading
+    examples_folder = join(folder_contiki, "examples")
 
     provider_conf = {
         "walltime": "01:00",
@@ -120,8 +123,10 @@ def main():
                     ],
                     "hostname": [f"m3-65.{SITE}.iot-lab.info"],
                     "image": join(
-                        examples_folder,
-                        "05-rpl-tsch-border-router",
+                        folder_contiki,
+                        "examples",
+                        "ipv6",
+                        "rpl-border-router",
                         "border-router.iotlab-m3",
                     ),
                 },
@@ -130,7 +135,7 @@ def main():
                     "hostname": [f"m3-66.{SITE}.iot-lab.info"],  # 1857
                     "image": join(
                         examples_folder,
-                        "04-er-rest-example",
+                        "er-rest-example",
                         "er-example-client.iotlab-m3",
                     ),
                 },
@@ -139,8 +144,27 @@ def main():
                     "hostname": [f"m3-67.{SITE}.iot-lab.info"],  # 1957
                     "image": join(
                         examples_folder,
-                        "04-er-rest-example",
+                        "er-rest-example",
                         "er-example-server.iotlab-m3",
+                    ),
+                },
+                # {
+                #     "roles": ["server"],
+                #     "hostname": [f"m3-68.{SITE}.iot-lab.info"],  # 2855
+                #     "image": join(
+                #         examples_folder,
+                #         "er-rest-example",
+                #         "server.iotlab-m3",
+                #     ),
+                # },
+                {
+                    "roles": ["http-server"],
+                    "hostname": [f"m3-69.{SITE}.iot-lab.info"],  # 2855
+                    "image": join(
+                        examples_folder,
+                        "ipv6",
+                        "http-server",
+                        "http-server.iotlab-m3",
                     ),
                 },
             ],
@@ -157,10 +181,11 @@ def main():
     codes = [
         one_machine["image"] for one_machine in provider_conf["resources"]["machines"]
     ]
+
     check_code(codes)
 
     conf = en.IotlabConf.from_dictionary(provider_conf)
-
+    print("do sudo tunslip6.py -v2 -L -a m3-65 -p 20000 2001:660:4403:0483::/64")
     p = en.Iotlab(conf)
     try:
         roles, _networks = p.init()
@@ -179,11 +204,14 @@ def main():
             read_thread.start()
             a = threading.Thread(target=reading_thread, args=(s_sender, 1))
             a.start()
-            time.sleep(10)
-            stop_reading = True
+            # b = threading.Thread(target=reading_thread, args=(s_server, 1))
+            # b.start()
             display_thread.join()
             read_thread.join()
+            # b.join()
             a.join()
+            while not stop_reading:
+                time.sleep(10)
     except KeyboardInterrupt:
         stop_reading = True
         print("KeyboardInterrupt")
@@ -193,8 +221,9 @@ def main():
         traceback.print_exc()
     finally:
         # Delete testbed reservation
-        # p.destroy()
-        return
+        print("destroying")
+        stop_reading = True
+        # p.destroy() #TODO: uncomment
 
 
 if __name__ == "__main__":
