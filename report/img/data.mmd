@@ -1,7 +1,7 @@
 sequenceDiagram
-    Note left of SSH: 1. Server can show Diagram
-    Server ->> Sensor (COAP server): COAP GET Temp
-    Server ->> Sensor (HTTP server): HTTP GET Pressure
-    Note left of SSH: The use can the get the data
-    SSH ->> Server: HTTP GET /temp
-    SSH ->> Server: HTTP GET /pressure
+    Note left of SSH: 1. Central Server can show Diagram
+    Central server ->> Sensor (COAP server): COAP GET Temp
+    Central server ->> Sensor (HTTP server): HTTP GET Pressure
+    Note left of SSH: The user can the get the data
+    SSH ->> Central server: HTTP GET /temp
+    SSH ->> Central server: HTTP GET /pressure

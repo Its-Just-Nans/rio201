@@ -2,16 +2,18 @@
 
 ## Introduction
 
-The objective of this project is to implement an IoT application. The IoT application should use several sensors and requests.
+The objective of this project is to implement an IoT application. The IoT application should use several sensors and network requests.
 We should use the [IoT Lab](https://www.iot-lab.info/).
 
-To simplify the task for the IoT lab deployment, I used the enoslib library.
+To simplify the task for the IoT lab deployment (which can be quite difficult), I used the Enoslib library.
 
 \newpage
 
 ## Architecture
 
-The goal of my architecture is to simulate IoT devices in a clean room. In a clean room, the temperature needs to be controlled. The same for the pressure which needs to be always bigger than the outside pressure. In a clean rooms there are also alarms button to press in case of emergency. Also there are also sometimes heavy lifting machines. All these aspect are in my architecture. Finally, in a cleanroom there is also a central computer that controls everything.
+The goal of my architecture is to simulate IoT devices in a clean room.
+
+In a clean room, the temperature needs to be controlled. The same for the pressure which needs to be always bigger than the outside pressure. In a clean rooms there are also alarms button to press in case of emergency. Also there are also sometimes heavy lifting machines. All these aspect are in my architecture. Finally, in a cleanroom there is also a central computer that controls everything.
 
 This architecture is composed of 3 major parts:
 
@@ -21,7 +23,7 @@ This architecture is composed of 3 major parts:
 
 ![Architecture](./img/archi.png)
 
-The main part of our architecture is the server which represents the central computer. The server contains four things:
+The main part of our architecture is the central server which represents the central computer. The central server contains four things:
 
 - a CoAP server
 - a HTTP server
@@ -34,7 +36,7 @@ The main part of our architecture is the server which represents the central com
 
 ![data](./img/data.png)
 
-The first part of this diagram is the data collection. It is composed of 2 captors. The server use its CoAP client and HTTP client to make a request to the captors to get the data every 10 seconds.
+The first part of this diagram is the data collection. It is composed of 2 captors. The central server use its CoAP client and HTTP client to make a request to the captors to get the data every 10 seconds.
 As we want to compare both HTTP and CoAP, each captor is using a different protocol.
 
 The code for to get the data from the CoAP server is quite simple.
@@ -80,7 +82,7 @@ PROCESS_THREAD(er_example_client, ev, data)
 
 For HTTP it's the same logic but with a HTTP client. We also need a second callback to save values in another list.
 
-To retrieve the data from the server and display it on a graph. We use the HTTP server with a json response
+To retrieve the data from the central server and display it on a graph. We use the HTTP server (of the central server) with a json response
 
 From the ssh frontend, we can do in python
 
@@ -156,7 +158,7 @@ Then we just print the data as a JSON array.
 
 ![threshold](./img/threshold.png)
 
-The autonomous captor is a captor that can move. We can set a threshold from the server. If the captor is above the threshold, it will stop.
+The autonomous captor is a captor that can move. We can set a threshold from the central server. If the captor is above the threshold, it will stop.
 
 In a real application this captor would be an actuator.
 
@@ -166,7 +168,7 @@ First, the user (from the SSH frontend) can set a threshold to the actuator usin
 aiocoap-client -m POST -p "10" coap://[2001:660:4403:0483::2855]:5383/threshold
 ```
 
-Then, the server send the threshold by making a request to an the autonomous actuator. The autonomous actuator will then stop the motor if the threshold is above the threshold.
+Then, the central server send the threshold by making a request to an the autonomous actuator. The autonomous actuator will then stop the motor if the threshold is above the threshold.
 
 ```c
 // on the main file of the server
